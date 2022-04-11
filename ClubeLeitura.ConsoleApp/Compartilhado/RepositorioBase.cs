@@ -1,0 +1,73 @@
+﻿using System.Collections.Generic;
+
+namespace ClubeLeitura.ConsoleApp.Compartilhado
+{
+    public abstract class RepositorioBase<T> where T : EntidadeBase
+    {
+        protected readonly List<T> registros;
+
+        protected int contadorNumero;
+
+        public RepositorioBase()
+        {
+            registros = new List<T>();
+        }
+
+        public virtual string Inserir(T entidade)
+        {
+            entidade.numero = ++contadorNumero;
+
+            registros.Add(entidade);
+
+            return "REGISTRO_VALIDO";
+        }
+
+        public void Editar(int numeroSelecionado, T entidade)
+        {
+
+            for (int i = 0; i < registros.Count; i++)
+            {
+                if (registros[i].numero == numeroSelecionado)
+                {
+                    entidade.numero = numeroSelecionado;
+                    registros[i] = entidade;
+
+                    break;
+                }
+            }
+        }
+
+        public bool Excluir(int numeroSelecionado)
+        {
+            T entidadeSelecionada = SelecionarRegistro(numeroSelecionado);
+
+            if (entidadeSelecionada == null)
+                return false;
+
+            registros.Remove(entidadeSelecionada);
+
+            return true;
+        }
+
+        public T SelecionarRegistro(int numeroRegistro)
+        {
+            return registros.Find(x => x.numero.Equals(numeroRegistro));
+          
+        
+        }
+
+        public List<T> SelecionarTodos()
+        {
+            return registros;
+        }
+
+        public bool ExisteRegistro(int numeroRegistro)
+        {
+            foreach (T registro in registros)
+                if (registro.numero == numeroRegistro)
+                    return true;
+
+            return false;
+        }
+    }
+}
